@@ -12,7 +12,7 @@ func main() {
 	input := `
 	try {
 		console.log('try something')
-	} catch {
+	} catch(e) {
 		console.log('something unexpected happened')
 	} finally {
 		console.log('the end!')
