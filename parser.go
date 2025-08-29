@@ -16,16 +16,16 @@ type TryStatement struct {
 }
 
 func (ts *TryStatement) String() string {
-	out := "try " + ts.TryBlock.String()
+	out := " try " + ts.TryBlock.String()
 	if ts.CatchBlock != nil {
-		out += "catch"
+		out += " catch "
 		if ts.CatchParameter != nil {
 			out += "(" + ts.CatchParameter.String() + ")"
 		}
 		out += ts.CatchBlock.String()
 	}
 	if ts.FinallyBlock != nil {
-		out += "finally " + ts.FinallyBlock.String()
+		out += " finally " + ts.FinallyBlock.String()
 	}
 	return out
 }
@@ -44,9 +44,6 @@ func ParseStatement(p *parser.Parser, next func(p *parser.Parser) ast.Statement)
 		if p.ExpectToken(token.LPAREN) {
 			p.NextToken() // consumes (
 			stmt.CatchParameter = &ast.Identifier{Token: p.CurrentToken, Value: p.CurrentToken.Literal}
-		}
-		if !p.ExpectToken(token.RPAREN) {
-			return nil
 		}
 		if !p.ExpectToken(token.LBRACE) {
 			return nil
