@@ -30,9 +30,9 @@ func (ts *TryStatement) String() string {
 	return out
 }
 
-func ParseStatement(p *parser.Parser, next func(p *parser.Parser) ast.Statement) ast.Statement {
+func ParseStatement(p *parser.Parser, next func() ast.Statement) ast.Statement {
 	if p.CurrentToken.Type != token.IDENT || p.CurrentToken.Literal != "try" {
-		return next(p)
+		return next()
 	}
 	if !p.ExpectToken(token.LBRACE) {
 		return nil
