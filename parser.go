@@ -9,8 +9,6 @@ import (
 )
 
 type TryStatement struct {
-	ast.Node
-
 	TryBlock       *ast.BlockStatement
 	CatchParameter *ast.Identifier
 	CatchBlock     *ast.BlockStatement
