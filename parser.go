@@ -1,6 +1,8 @@
 package tryparser
 
 import (
+	"strings"
+
 	"github.com/xjslang/xjs/ast"
 	"github.com/xjslang/xjs/parser"
 	"github.com/xjslang/xjs/token"
@@ -15,19 +17,22 @@ type TryStatement struct {
 	FinallyBlock   *ast.BlockStatement
 }
 
-func (ts *TryStatement) String() string {
-	out := " try " + ts.TryBlock.String()
+func (ts *TryStatement) WriteTo(b *strings.Builder) {
+	b.WriteString(" try ")
+	ts.TryBlock.WriteTo(b)
 	if ts.CatchBlock != nil {
-		out += " catch "
+		b.WriteString(" catch ")
 		if ts.CatchParameter != nil {
-			out += "(" + ts.CatchParameter.String() + ")"
+			b.WriteRune('(')
+			ts.CatchParameter.WriteTo(b)
+			b.WriteRune(')')
 		}
-		out += ts.CatchBlock.String()
+		ts.CatchBlock.WriteTo(b)
 	}
 	if ts.FinallyBlock != nil {
-		out += " finally " + ts.FinallyBlock.String()
+		b.WriteString(" finally ")
+		ts.FinallyBlock.WriteTo(b)
 	}
-	return out
 }
 
 func ParseStatement(p *parser.Parser, next func() ast.Statement) ast.Statement {
