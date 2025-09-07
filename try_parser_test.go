@@ -19,7 +19,7 @@ func TestParser(t *testing.T) {
 	}`
 	l := lexer.New(input)
 	p := parser.New(l)
-	p.UseStatementHandler(ParseStatement)
+	p.UseStatementParser(ParseTryStatement)
 	ast := p.ParseProgram()
 	fmt.Println(ast.String())
 }

@@ -33,7 +33,7 @@ func (ts *TryStatement) WriteTo(b *strings.Builder) {
 	}
 }
 
-func ParseStatement(p *parser.Parser, next func() ast.Statement) ast.Statement {
+func ParseTryStatement(p *parser.Parser, next func() ast.Statement) ast.Statement {
 	if p.CurrentToken.Type != token.IDENT || p.CurrentToken.Literal != "try" {
 		return next()
 	}
