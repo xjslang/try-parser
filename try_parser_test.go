@@ -20,7 +20,10 @@ func TestParser(t *testing.T) {
 	l := lexer.New(input)
 	p := parser.New(l)
 	p.UseStatementParser(ParseTryStatement)
-	ast := p.ParseProgram()
+	ast, err := p.ParseProgram()
+	if err != nil {
+		t.Fatalf("ParseProgram() error: %v", err)
+	}
 	fmt.Println(ast.String())
 }
 
