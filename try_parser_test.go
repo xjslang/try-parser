@@ -17,16 +17,11 @@ func TestParser(t *testing.T) {
 	} finally {
 		console.log('the end!')
 	}`
-	l := lexer.New(input)
-	p := parser.New(l)
-	p.UseStatementParser(ParseTryStatement)
+	lb := lexer.NewBuilder()
+	p := parser.NewBuilder(lb).Install(Plugin).Build(input)
 	ast, err := p.ParseProgram()
 	if err != nil {
 		t.Fatalf("ParseProgram() error: %v", err)
 	}
 	fmt.Println(ast.String())
-}
-
-func BenchmarkParse(b *testing.B) {
-	//
 }
