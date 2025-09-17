@@ -1,7 +1,6 @@
 package tryparser
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/xjslang/xjs/ast"
@@ -37,7 +36,7 @@ func (ts *TryStatement) WriteTo(b *strings.Builder) {
 
 func Plugin(pb *parser.Builder) {
 	lb := pb.LexerBuilder
-	tryTokenType := lb.RegisterTokenType("try")
+	tryTokenType := lb.RegisterTokenType("TryStatement")
 	lb.UseTokenInterceptor(func(l *lexer.Lexer, next func() token.Token) token.Token {
 		ret := next()
 		if ret.Literal == "try" {
@@ -47,32 +46,23 @@ func Plugin(pb *parser.Builder) {
 	})
 
 	pb.UseStatementInterceptor(func(p *parser.Parser, next func() ast.Statement) ast.Statement {
-		tok := p.CurrentToken()
-		if tok.Type != tryTokenType {
+		if p.CurrentToken.Type != tryTokenType {
 			return next()
 		}
+		stmt := &TryStatement{}
 		if !p.ExpectToken(token.LBRACE) {
-			p.AddError(fmt.Sprintf("Expected %s, found %s", token.LBRACE, p.CurrentToken().Literal))
 			return nil
 		}
-		peekTok := p.PeekToken()
-		stmt := &TryStatement{}
 		stmt.TryBlock = p.ParseBlockStatement()
-		if peekTok.Literal == "catch" {
-			p.NextToken() // consumes catch
-			if p.ExpectToken(token.LPAREN) {
-				p.NextToken() // consumes (
-				tok := p.CurrentToken()
-				stmt.CatchParameter = &ast.Identifier{Token: tok, Value: tok.Literal}
-			}
+		if p.PeekToken.Literal == "catch" {
+			p.NextToken()
 			if !p.ExpectToken(token.LBRACE) {
-				p.AddError(fmt.Sprintf("Expected %s, found %s", token.LBRACE, p.CurrentToken().Literal))
 				return nil
 			}
 			stmt.CatchBlock = p.ParseBlockStatement()
 		}
-		if peekTok.Literal == "finally" {
-			p.NextToken() // consumes finally
+		if p.PeekToken.Literal == "finally" {
+			p.NextToken()
 			if !p.ExpectToken(token.LBRACE) {
 				return nil
 			}
