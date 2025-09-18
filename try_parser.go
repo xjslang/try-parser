@@ -37,7 +37,7 @@ func (ts *TryStatement) WriteTo(b *strings.Builder) {
 func Plugin(pb *parser.Builder) {
 	lb := pb.LexerBuilder
 	tryTokenType := lb.RegisterTokenType("TryStatement")
-	lb.UseTokenInterceptor(func(l *lexer.Lexer, next func() token.Token) token.Token {
+	lb.UseInterceptor(func(l *lexer.Lexer, next func() token.Token) token.Token {
 		ret := next()
 		if ret.Literal == "try" {
 			ret.Type = tryTokenType
