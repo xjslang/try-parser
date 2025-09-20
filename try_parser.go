@@ -56,6 +56,19 @@ func Plugin(pb *parser.Builder) {
 		stmt.TryBlock = p.ParseBlockStatement()
 		if p.PeekToken.Literal == "catch" {
 			p.NextToken()
+			if p.PeekToken.Type == token.LPAREN {
+				p.NextToken() // consume '('
+				if p.PeekToken.Type == token.IDENT {
+					p.NextToken()
+					stmt.CatchParameter = &ast.Identifier{
+						Token: p.CurrentToken,
+						Value: p.CurrentToken.Literal,
+					}
+				}
+				if !p.ExpectToken(token.RPAREN) {
+					return nil
+				}
+			}
 			if !p.ExpectToken(token.LBRACE) {
 				return nil
 			}

@@ -25,13 +25,15 @@ func main() {
       console.log('done!')
     }`
     
-    // Create lexer and parser
-    l := lexer.New(input)
-    p := parser.New(l)
+    // Create lexer and parser with the plugin
+    lb := lexer.NewBuilder()
+    p := parser.NewBuilder(lb).Install(tryparser.Plugin).Build(input)
     
-    // Register the try-catch middleware and parse the program
-    p.UseStatementHandler(tryparser.ParseStatement)
-    ast := p.ParseProgram()
+    // Parse the program
+    ast, err := p.ParseProgram()
+    if err != nil {
+        panic(err)
+    }
     fmt.Println(ast.String())
 }
 ```
